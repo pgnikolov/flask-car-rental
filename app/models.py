@@ -13,9 +13,8 @@ class Car(db.Model):
     gearbox = db.Column(db.String(150))
     color = db.Column(db.String(150))
     status = db.Column(db.Boolean, default=True)
-    rented_by_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
-    start_of_rent = db.Column(db.DateTime, nullable=True)
-    end_of_rent = db.Column(db.DateTime, nullable=True)
+    rental_history = db.relationship('RentalHistory', backref='car', lazy=True)
+
 
 
 class User(db.Model, UserMixin):
@@ -24,3 +23,12 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(150))
     first_name = db.Column(db.String(150))
     last_name = db.Column(db.String(150))
+    rented_cars = db.relationship('RentalHistory', backref='user', lazy=True)
+
+
+class RentalHistory(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    car_id = db.Column(db.Integer, db.ForeignKey('car.id'))
+    start_of_rent = db.Column(db.DateTime, nullable=False)
+    end_of_rent = db.Column(db.DateTime, nullable=True)
