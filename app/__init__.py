@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy.track_modifications import models_committed
 
 db = SQLAlchemy()
 DB_NAME = 'database.db'
@@ -12,10 +13,14 @@ def create_app():
 
     from .views import views
     from .auth import auth
+    from .cars import cars_bp
 
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
+    app.register_blueprint(cars_bp, url_prefix='/cars')
+
+    from .models import User, Car, RentalHistory
+    with app.app_context():
+        db.create_all()
 
     return app
-
-
