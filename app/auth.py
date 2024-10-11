@@ -30,14 +30,14 @@ def login():
 @auth.route('/logout_confirmation')
 @login_required
 def logout_confirmation():
-    return render_template('logout.html')
+    return render_template('logout.html', user=current_user)
 
 
 @auth.route('/logout', methods=['POST'])
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('views.index'))
+    return redirect(url_for('views.index'), )
 
 
 @auth.route('/sign_up', methods=['GET', 'POST'])
