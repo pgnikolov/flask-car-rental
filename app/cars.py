@@ -1,13 +1,14 @@
-from flask import render_template, Blueprint
-from .models import Car
+from flask import render_template, Blueprint, redirect, url_for, flash
+from .models import Car, RentalHistory
 from . import db
+from datetime import datetime
 
 cars_bp = Blueprint('cars', __name__)
 
 @cars_bp.route('/cars')
 def list_cars():
-    cars = Car.query.all()
-    print(f"Number of cars found: {len(cars)}")  # Add this line for debugging
-    return render_template('cars.html', cars=cars)
+    rented_cars = RentalHistory.query.filter_by(end_of_rent=None).all()
+    rented_cars_ids = [rental.car_id for rental in rented_cars]
+    available_cars = Car.query.filter(~Car.id.in_(rented_cars_ids)).all()
+    return render_template('cars.html', cars=available_cars)
 
-# Other routes and functions related to cars can be defined here
