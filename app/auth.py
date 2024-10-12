@@ -1,61 +1,16 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
-from flask_login import login_user, login_required, logout_user, current_user
-from werkzeug.security import generate_password_hash, check_password_hash
-from itsdangerous import URLSafeTimedSerializer as Serializer
+from flask import Blueprint, request, render_template, flash, redirect, url_for, current_app
+from flask_login import current_user
+from werkzeug.security import generate_password_hash
 from flask_mail import Message
-from . import db, mail
+from itsdangerous import URLSafeTimedSerializer
 from .models import User
-import os
+from . import db, mail
+import config
 
 auth = Blueprint('auth', __name__)
 
-
-@auth.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form.get('password')
-
-        user = User.query.filter_by(email=email).first()
-        if user:
-            if check_password_hash(user.password, password):
-                flash('Logged in successfully!', category='success')
-                # user is logged in until other activities
-                login_user(user, remember=True)
-                return redirect(url_for('views.index'))
-            else:
-                flash('Incorrect password, try again.', category='error')
-        else:
-            flash('Email does not exist.', category='error')
-
-    return render_template('login.html', user=current_user)
-
-
-@auth.route('/logout_confirmation')
-@login_required
-def logout_confirmation():
-    return render_template('logout.html', user=current_user)
-
-
-@auth.route('/logout', methods=['POST'])
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('views.index'), )
-
-
-def send_email(to, subject, template):
-    msg = Message(subject, recipients=[to])
-    msg.body = render_template('/confirm.html', url=confirm_url)
-    mail.send(msg)
-
-
-
-@auth.route('/confirm/<token>')
-def confirm_email(token):
-    # Потвърдете имейл адреса на потребителя
-    pass  # Имплементирайте логиката за потвърждение тук
-
+def get_serializer():
+    return URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
 
 @auth.route('/sign_up', methods=['GET', 'POST'])
 def sign_up():
@@ -66,18 +21,16 @@ def sign_up():
         password1 = request.form['password1']
         password2 = request.form['password2']
 
-        # Check if the email already exists
         user = User.query.filter_by(email=email).first()
         if user:
             flash("Email already exists. Please log in instead.", category='error')
-
         elif len(email) < 4:
             flash("Email must be at least 4 characters long", category='error')
         elif len(first_name) < 2:
             flash("First name must be at least 2 characters long", category='error')
         elif len(last_name) < 2:
             flash("Last name must be at least 2 characters long", category='error')
-        elif password1!= password2:
+        elif password1 != password2:
             flash("Passwords do not match", category='error')
         elif len(password1) < 7:
             flash("Password must be at least 7 characters long", category='error')
@@ -87,19 +40,56 @@ def sign_up():
                 first_name=first_name,
                 last_name=last_name,
                 password=generate_password_hash(password1, method='pbkdf2:sha256'),
-                is_active = False,
+                is_verified=False
             )
             db.session.add(new_user)
             db.session.commit()
 
-            # Generate token for email confirmation
-            token = s.dumps(email, salt='email-confirmation')
-            confirm_url = url_for('confirm_email', token=token, _external=True)
+            # Създаване на токен за потвърждение на имейла
+            s = get_serializer()
+            token = s.dumps(email, salt='email-confirm')
+            confirm_url = url_for('auth.confirm_email', token=token, _external=True)
             subject = "Please confirm your email"
-            send_email(email, subject, confirm_url)
 
-            login_user(user, remember=True)
-            flash("Account created successfully", category='success')
+            # Създаване на съобщението
+            msg_body = f"Please confirm your email by clicking on the following link: {confirm_url}"
+
+            # Изпращане на имейл за потвърждение
+            send_email(
+                current_app,
+                email,
+                subject,
+                msg_body  # Използвай генерирания текст вместо шаблон
+            )
+
+            flash("A confirmation email has been sent to your email address.", category='success')
             return redirect(url_for('views.index'))
 
     return render_template('sign_up.html', user=current_user)
+
+def send_email(app, to, subject, template, **kwargs):
+    with app.app_context():
+        msg_body = kwargs.get('msg_body', '')
+        msg = Message(subject, recipients=[to], sender=current_app.config['MAIL_DEFAULT_SENDER'])
+        msg.body = msg_body
+        mail.send(msg)
+
+
+@auth.route('/confirm/<token>')
+def confirm_email(token):
+    s = get_serializer()  # Initialize the serializer
+    try:
+        email = s.loads(token, salt='email-confirm', max_age=3600)
+    except:
+        flash("The confirmation link is invalid or has expired.", category='error')
+        return redirect(url_for('views.index'))
+
+    user = User.query.filter_by(email=email).first()
+    if user.is_verified:
+        flash("Email already confirmed. Please log in.", category='info')
+    else:
+        user.is_verified = True
+        db.session.commit()
+        flash("Email confirmed! You can now log in.", category='success')
+
+    return redirect(url_for('views.index'))

@@ -45,7 +45,10 @@ class User(db.Model, UserMixin):
     first_name = db.Column(db.String(150))
     last_name = db.Column(db.String(150))
     rented_cars = db.relationship('RentalHistory', backref='user', lazy=True)
-    confirmed = db.Column(db.Boolean, default=False)  # Add this line
+    is_verified = db.Column(db.Boolean, default=False)
+
+    def __repr__(self):
+        return f'<User {self.email}>'
 
 
 class RentalHistory(db.Model):
