@@ -1,10 +1,14 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_user, login_required, logout_user, current_user
-from .models import User
 from werkzeug.security import generate_password_hash, check_password_hash
-from . import db
+from itsdangerous import URLSafeTimedSerializer as Serializer
+from flask_mail import Message
+from . import db, mail
+from .models import User
+import os
 
 auth = Blueprint('auth', __name__)
+
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
@@ -40,6 +44,19 @@ def logout():
     return redirect(url_for('views.index'), )
 
 
+def send_email(to, subject, template):
+    msg = Message(subject, recipients=[to])
+    msg.body = render_template('/confirm.html', url=confirm_url)
+    mail.send(msg)
+
+
+
+@auth.route('/confirm/<token>')
+def confirm_email(token):
+    # Потвърдете имейл адреса на потребителя
+    pass  # Имплементирайте логиката за потвърждение тук
+
+
 @auth.route('/sign_up', methods=['GET', 'POST'])
 def sign_up():
     if request.method == 'POST':
@@ -69,10 +86,18 @@ def sign_up():
                 email=email,
                 first_name=first_name,
                 last_name=last_name,
-                password=generate_password_hash(password1, method='pbkdf2:sha256')
+                password=generate_password_hash(password1, method='pbkdf2:sha256'),
+                is_active = False,
             )
             db.session.add(new_user)
             db.session.commit()
+
+            # Generate token for email confirmation
+            token = s.dumps(email, salt='email-confirmation')
+            confirm_url = url_for('confirm_email', token=token, _external=True)
+            subject = "Please confirm your email"
+            send_email(email, subject, confirm_url)
+
             login_user(user, remember=True)
             flash("Account created successfully", category='success')
             return redirect(url_for('views.index'))

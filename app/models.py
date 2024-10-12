@@ -45,6 +45,7 @@ class User(db.Model, UserMixin):
     first_name = db.Column(db.String(150))
     last_name = db.Column(db.String(150))
     rented_cars = db.relationship('RentalHistory', backref='user', lazy=True)
+    confirmed = db.Column(db.Boolean, default=False)  # Add this line
 
 
 class RentalHistory(db.Model):
