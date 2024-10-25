@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, flash
 from flask_login import login_user, logout_user
-from .forms import LoginForm  # Updated to use SignUpForm
-from .models import User  # Assuming you have a User model
+from .forms import LoginForm
+from app.models.user import User
 from . import auth_bp
 from werkzeug.security import check_password_hash
 @auth_bp.route('/login', methods=['GET', 'POST'])

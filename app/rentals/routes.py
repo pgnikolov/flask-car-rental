@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash, request
+from app.models import User
 from app.extensions.database import db
 from . import rentals_bp
 from flask_login import current_user
