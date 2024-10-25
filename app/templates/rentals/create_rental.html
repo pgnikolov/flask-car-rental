@@ -1,0 +1,26 @@
+{% extends "../base.html" %}
+
+{% block title %}Create Rental{% endblock %}
+
+{% block content %}
+<h2>Create Rental</h2>
+<form method="POST" action="{{ url_for('rentals.create_rental') }}">
+  <div class="form-group">
+    <label for="car_id">Select Car</label>
+    <select class="form-control" id="car_id" name="car_id" required>
+      {% for car in cars %}
+      <option value="{{ car.id }}">{{ car.brand }} {{ car.model }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="start_date">Start Date</label>
+    <input type="date" class="form-control" id="start_date" name="start_date" required>
+  </div>
+  <div class="form-group">
+    <label for="end_date">End Date</label>
+    <input type="date" class="form-control" id="end_date" name="end_date" required>
+  </div>
+  <button type="submit" class="btn btn-primary">Create Rental</button>
+</form>
+{% endblock %}
