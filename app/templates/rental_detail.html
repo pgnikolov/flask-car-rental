@@ -1,0 +1,12 @@
+{% extends "../base.html" %}
+
+{% block title %}Rental Details{% endblock %}
+
+{% block content %}
+<h2>Rental Details</h2>
+<p><strong>Car:</strong> {{ rental.car.brand }} {{ rental.car.model }}</p>
+<p><strong>Start Date:</strong> {{ rental.start_date }}</p>
+<p><strong>End Date:</strong> {{ rental.end_date }}</p>
+<p><strong>Status:</strong> {{ rental.status }}</p>
+<a href="{{ url_for('rentals.list_rentals') }}" class="btn btn-secondary">Back to Rentals</a>
+{% endblock %}
