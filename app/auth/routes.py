@@ -1,9 +1,29 @@
 from flask import request, render_template, flash, redirect, url_for, current_app
-from flask_login import current_user
-from werkzeug.security import generate_password_hash
+from flask_login import current_user, login_user
+from werkzeug.security import generate_password_hash, check_password_hash
 from app.models import User
 from app import db
 from . import auth_bp
+
+
+@auth_bp.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        user = User.query.filter_by(email=email).first()
+        if user:
+            if check_password_hash(user.password, password):
+                flash('Logged in successfully!', category='success')
+                login_user(user, remember=True)
+                return redirect(url_for('views.index'))
+            else:
+                flash('Incorrect password, try again.', category='error')
+        else:
+            flash('Email does not exist.', category='error')
+
+    return render_template("login.html", user=current_user)
 
 
 @auth_bp.route('/sign_up', methods=['GET', 'POST'])
@@ -38,6 +58,8 @@ def sign_up():
             )
             db.session.add(new_user)
             db.session.commit()
+
+
 
             return redirect(url_for('views.index'))
 
