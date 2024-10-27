@@ -14,54 +14,26 @@
 /* Navbar Styles */
 .navbar {
     background-color: #343a40; /* Dark background color */
-    padding: 5px 10px;
 }
 
 .navbar-brand {
     font-family: 'Roboto', sans-serif; /* Use Roboto font */
-    font-size: 16px; /* Font size for brand */
-    font-weight: normal; /* Make brand  */
+    font-size: 24px; /* Font size for brand */
+    font-weight: bold; /* Make brand bold */
     color: #f6c812; /* Change brand color */
-}
-
-.navbar-brand:hover {
-    color: #ffd966; /* Slightly lighter on hover */
 }
 
 .navbar-nav .nav-link {
     font-family: 'Roboto', sans-serif; /* Use Roboto font */
-    font-size: 16px; /* Font size for links */
-    padding-top: 5px;
-    padding-bottom: 5px;
+    font-size: 18px; /* Font size for links */
     color: #ffffff; /* Link color */
 }
 
 .navbar-nav .nav-link:hover {
-    color: #f6c812; /* Hover effect */
+    color: #f6c812; /* Change link color on hover */
 }
 
-/* Footer Styles */
-.footer {
-    background-color: #343a40;
-    color: #ffffff;
-    text-align: center;
-    padding: 15px 0;
-    font-family: 'Roboto', sans-serif;
-    font-size: 14px;
-}
-
-/* Media Queries for Mobile */
-@media (max-width: 768px) {
-    .header {
-        height: 100px;
-    }
-    .navbar-brand {
-        font-size: 20px;
-    }
-    .navbar-nav .nav-link {
-        font-size: 16px;
-    }
-    .footer {
-        font-size: 12px;
-    }
+/* Add padding to the navbar */
+.navbar {
+    padding: 15px 20px; /* Adjust padding */
 }
