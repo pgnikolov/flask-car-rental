@@ -3,7 +3,8 @@ from os import path
 from flask import Flask, render_template
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
-
+from app.user.routes import user_bp
+from app.admin.routes import admin_bp
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_NAME = 'database.db'
@@ -22,6 +23,8 @@ def create_app():
 
     app.register_blueprint(views_bp)
     app.register_blueprint(auth_bp, url_prefix='/auth')
+    app.register_blueprint(user_bp)
+    app.register_blueprint(admin_bp)
 
     from app.models import User
 

@@ -18,7 +18,7 @@
 
 .navbar-brand {
     font-family: 'Roboto', sans-serif; /* Use Roboto font */
-    font-size: 24px; /* Font size for brand */
+    font-size: 18px; /* Font size for brand */
     font-weight: bold; /* Make brand bold */
     color: #f6c812; /* Change brand color */
 }

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Panel - My Car Rental Service{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Welcome, Admin</h2>
+    <p>Manage users, cars, and rentals from the dashboard below.</p>
+
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Manage Users</h5>
+                    <p class="card-text">View and manage user accounts.</p>
+                    <a href="#" class="btn btn-dark">Go to Users</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Manage Cars</h5>
+                    <p class="card-text">Add, edit, or remove cars from the fleet.</p>
+                    <a href="#" class="btn btn-dark">Go to Cars</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Manage Rentals</h5>
+                    <p class="card-text">Oversee active and past rental agreements.</p>
+                    <a href="#" class="btn btn-dark">Go to Rentals</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
