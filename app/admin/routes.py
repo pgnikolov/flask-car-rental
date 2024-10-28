@@ -1,5 +1,9 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
+from app import db
+from app.models import Car, CarType, FuelType, GearboxType
+from app.forms import CarForm
+
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -17,3 +21,27 @@ def admin_required(func):
 @admin_required
 def admin_panel():
     return render_template('admin.html', current_user=current_user)
+
+
+@admin_bp.route('/add_car', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def add_car():
+    form = CarForm()
+    if form.validate_on_submit():
+        new_car = Car(
+            brand=form.brand.data,
+            model=form.model.data,
+            year=form.year.data,
+            rental_price=form.rental_price.data,
+            type=CarType[form.type.data],
+            fuel=FuelType[form.fuel.data],
+            gearbox=GearboxType[form.gearbox.data],
+            color=form.color.data,
+            status=True
+        )
+        db.session.add(new_car)
+        db.session.commit()
+        flash('Car added successfully!', 'success')
+        return redirect(url_for('admin.admin_panel'))
+    return render_template('add_car.html', form=form, current_user=current_user)

@@ -4,8 +4,7 @@ from flask import Flask
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from app.user.routes import user_bp
-from app.admin.routes import admin_bp
+
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_NAME = 'database.db'
@@ -23,6 +22,8 @@ def create_app():
 
     from app.views import views_bp
     from app.auth import auth_bp
+    from app.admin.routes import admin_bp
+    from app.user.routes import user_bp
 
     app.register_blueprint(views_bp)
     app.register_blueprint(auth_bp, url_prefix='/auth')

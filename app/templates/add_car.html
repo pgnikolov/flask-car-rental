@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Add a New Car</h2>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div>
+        {{ form.brand.label }}<br>
+        {{ form.brand(size=32) }}<br>
+        {% for error in form.brand.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form.model.label }}<br>
+        {{ form.model(size=32) }}<br>
+        {% for error in form.model.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form.year.label }}<br>
+        {{ form.year(size=32) }}<br>
+        {% for error in form.year.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form.rental_price.label }}<br>
+        {{ form.rental_price(size=32) }}<br>
+        {% for error in form.rental_price.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form.type.label }}<br>
+        {{ form.type() }}<br>
+        {% for error in form.type.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form.fuel.label }}<br>
+        {{ form.fuel() }}<br>
+        {% for error in form.fuel.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form.gearbox.label }}<br>
+        {{ form.gearbox() }}<br>
+        {% for error in form.gearbox.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form.color.label }}<br>
+        {{ form.color(size=32) }}<br>
+        {% for error in form.color.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form.submit() }}
+    </div>
+</form>
+{% endblock %}
