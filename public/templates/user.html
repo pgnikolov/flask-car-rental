@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}User Panel - My Car Rental Service{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Welcome, {{ current_user.first_name }}</h2>
+    <p>Manage your rentals and profile settings from here.</p>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">View Available Cars</h5>
+                    <p class="card-text">Browse and rent from a wide selection of cars.</p>
+                    <a href="#">Browse Cars</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Manage Rentals</h5>
+                    <p class="card-text">View your rental history and current bookings.</p>
+                    <a href="#" class="btn btn-primary">My Rentals</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
