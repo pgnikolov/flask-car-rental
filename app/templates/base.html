@@ -20,6 +20,12 @@
             <ul class="navbar-nav mr-auto">
                 {% if current_user.is_authenticated %}
                     <li class="nav-item">
+                        <a class="nav-link" href="#">Rentals</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Cars</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
                     </li>
                     {% if current_user.is_admin %}
@@ -37,12 +43,6 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('auth.sign_up') }}">Sign Up</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Cars</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Rentals</a>
                     </li>
                 {% endif %}
             </ul>
