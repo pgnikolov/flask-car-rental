@@ -3,10 +3,9 @@ from flask_login import login_required, current_user
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
-# Function to check if the user is an admin
 def admin_required(func):
     def wrapper(*args, **kwargs):
-        if not current_user.is_admin:  # Assuming an `is_admin` attribute on the user model
+        if not current_user.is_admin:
             flash("You do not have permission to access the admin panel.", "danger")
             return redirect(url_for('user.user_panel'))
         return func(*args, **kwargs)
