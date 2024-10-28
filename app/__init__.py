@@ -1,14 +1,16 @@
 import os
 from os import path
-from flask import Flask, render_template
+from flask import Flask
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from app.user.routes import user_bp
 from app.admin.routes import admin_bp
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_NAME = 'database.db'
 db = SQLAlchemy()
+migrate = Migrate()
 
 
 def create_app():
@@ -17,6 +19,7 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(BASE_DIR, DB_NAME)}'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
+    migrate.init_app(app, db)
 
     from app.views import views_bp
     from app.auth import auth_bp
