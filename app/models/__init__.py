@@ -1,5 +1,4 @@
 from enum import Enum
-from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from app import db
 
@@ -43,8 +42,8 @@ class RentalHistory(db.Model):
     __tablename__ = 'rental_history'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))  # Updated here
-    car_id = db.Column(db.Integer, db.ForeignKey('cars.id'))  # Updated here
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    car_id = db.Column(db.Integer, db.ForeignKey('cars.id'))
     start_of_rent = db.Column(db.DateTime, nullable=False)
     end_of_rent = db.Column(db.DateTime, nullable=True)
 
@@ -58,6 +57,7 @@ class User(db.Model, UserMixin):
     last_name = db.Column(db.String(150))
     rented_cars = db.relationship('RentalHistory', backref='user', lazy=True)
     is_verified = db.Column(db.Boolean, default=False)
+    is_admin = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return f'<User {self.email}>'
