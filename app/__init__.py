@@ -24,11 +24,13 @@ def create_app():
     from app.auth import auth_bp
     from app.admin.routes import admin_bp
     from app.user.routes import user_bp
+    from app.cars.routes import cars_bp
 
     app.register_blueprint(views_bp)
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(user_bp)
     app.register_blueprint(admin_bp)
+    app.register_blueprint(cars_bp, url_prefix='/cars')
 
     from app.models import User
 
