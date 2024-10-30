@@ -38,6 +38,9 @@ def add_car():
             fuel=FuelType[form.fuel.data],
             gearbox=GearboxType[form.gearbox.data],
             color=form.color.data,
+            seats=form.seats.data,  # New field for seats
+            doors=form.doors.data,  # New field for doors
+            mileage=form.mileage.data,  # New field for mileage
             status=True
         )
         db.session.add(new_car)

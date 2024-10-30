@@ -4,6 +4,7 @@
 <h2>Add a New Car</h2>
 <form method="POST">
     {{ form.hidden_tag() }}
+
     <div>
         {{ form.brand.label }}<br>
         {{ form.brand(size=32) }}<br>
@@ -11,6 +12,7 @@
             <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
     </div>
+
     <div>
         {{ form.model.label }}<br>
         {{ form.model(size=32) }}<br>
@@ -18,6 +20,7 @@
             <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
     </div>
+
     <div>
         {{ form.year.label }}<br>
         {{ form.year(size=32) }}<br>
@@ -25,6 +28,7 @@
             <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
     </div>
+
     <div>
         {{ form.rental_price.label }}<br>
         {{ form.rental_price(size=32) }}<br>
@@ -32,6 +36,7 @@
             <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
     </div>
+
     <div>
         {{ form.type.label }}<br>
         {{ form.type() }}<br>
@@ -39,6 +44,7 @@
             <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
     </div>
+
     <div>
         {{ form.fuel.label }}<br>
         {{ form.fuel() }}<br>
@@ -46,6 +52,7 @@
             <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
     </div>
+
     <div>
         {{ form.gearbox.label }}<br>
         {{ form.gearbox() }}<br>
@@ -53,6 +60,7 @@
             <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
     </div>
+
     <div>
         {{ form.color.label }}<br>
         {{ form.color(size=32) }}<br>
@@ -60,6 +68,32 @@
             <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
     </div>
+
+    <!-- New fields added -->
+    <div>
+        {{ form.seats.label }}<br>
+        {{ form.seats(size=32) }}<br>
+        {% for error in form.seats.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </div>
+
+    <div>
+        {{ form.doors.label }}<br>
+        {{ form.doors(size=32) }}<br>
+        {% for error in form.doors.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </div>
+
+    <div>
+        {{ form.mileage.label }}<br>
+        {{ form.mileage(size=32) }}<br>
+        {% for error in form.mileage.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </div>
+
     <div>
         {{ form.submit() }}
     </div>
