@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, flash
+from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
 from app import db
 from app.models import Car, CarType, FuelType, GearboxType
@@ -45,3 +45,21 @@ def add_car():
         flash('Car added successfully!', 'success')
         return redirect(url_for('admin.admin_panel'))
     return render_template('add_car.html', form=form, current_user=current_user)
+
+
+@admin_bp.route('/manage_cars', methods=['GET', 'POST'])
+@admin_required
+@login_required
+def manage_cars():
+    all_cars = Car.query.all()
+    if request.method == 'POST':
+        car_id = request.form.get('car_id')
+        car_to_delete = Car.query.get(car_id)
+        if car_to_delete:
+            db.session.delete(car_to_delete)
+            db.session.commit()
+            flash('Car deleted successfully!', 'success')
+        else:
+            flash('Car not found.', 'danger')
+    all_cars = Car.query.all()
+    return render_template('manage_cars.html', cars=all_cars, current_user=current_user)
