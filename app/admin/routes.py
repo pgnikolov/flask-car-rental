@@ -96,8 +96,6 @@ def manage_cars():
             db.session.delete(car_to_delete)
             db.session.commit()
             flash('Car deleted successfully!', 'success')
-        else:
-            flash('Car not found.', 'danger')
 
         edit_car_id = request.form.get('edit_car_id')
         if edit_car_id:
