@@ -4,15 +4,22 @@ A simple car rental web application built with Flask, providing essential featur
 
 ## Features
 
-- **User Authentication**: Secure login and registration for users and admins.
-- **Car Management**: Add, edit, and delete cars from the inventory.
-- **Rental Management**: Create, view, and manage bookings for clients.
-- **Admin Dashboard**: Overview and control of all cars, clients, and rental operations.
+- **User Authentication**: Secure login and registration for users and admins, with email verification for new users.
+- **Car Management**: 
+  - Add, edit, and delete cars from the inventory.
+  - Filter cars by type, fuel, and seating capacity for better user experience.
+- **Rental Management**: 
+  - Create, view, and manage bookings for clients.
+  - View car availability and rental history.
+- **Admin Dashboard**: 
+  - Overview and control of all cars, clients, and rental operations.
+  - Manage car details like brand, model, year, color, rental price, and status (available/rented).
+  
 
 ## 🛠️ Built With
 
 - **Flask** - Backend framework for routing and handling requests.
-- **SQLAlchemy** - ORM for database interactions.
+- **SQLAlchemy**: An ORM (Object-Relational Mapping) library for Python, providing a full power and flexibility of SQL without the need for writing raw SQL queries.
 - **SQLite** - Lightweight, local database for storing data.
 - **HTML/CSS** - Frontend design and layout.
 - **Bootstrap** - Responsive UI components.
@@ -49,10 +56,18 @@ A simple car rental web application built with Flask, providing essential featur
 
 ## Folder Structure
 
-- **app/**: Contains the main application files and routes.
-- **static/**: Static resources like CSS and images.
-- **templates/**: HTML templates for the web pages.
+- **app/**: Contains the main application files, including routes, models, and forms.
+- **static/**: Static resources like CSS, JavaScript, and images.
+- **templates/**: Database migrations for schema management using Flask-Migrate.
 
+
+## Libraries and Methods Used
+
+- **Flask-SQLAlchemy**: Simplifies SQLAlchemy integration with Flask, making it easy to work with databases.
+- **Flask-Migrate**: Handles database migrations, allowing for version control of database schema changes.
+- **Flask-WTF**: Integrates WTForms with Flask,
+- **Flask-Login**: Manages user sessions and authentication, making it easy to handle user logins.
+- 
 
 --- 
 
