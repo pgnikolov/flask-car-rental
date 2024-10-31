@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from sqlalchemy.exc import SQLAlchemyError
 from werkzeug.utils import secure_filename
 from app import db
-from app.models import Car, CarType, FuelType, GearboxType
+from app.models import Car, CarType, FuelType, GearboxType, RentalHistory
 from app.forms import CarForm
 import os
 
@@ -115,8 +115,6 @@ def edit_car(car_id):
 @admin_required
 @login_required
 def manage_cars():
-    all_cars = Car.query.all()
-
     if request.method == 'POST':
         car_id = request.form.get('car_id')
         car_to_delete = Car.query.get(car_id)
@@ -131,3 +129,18 @@ def manage_cars():
 
     all_cars = Car.query.all()
     return render_template('manage_cars.html', cars=all_cars, current_user=current_user)
+
+
+@admin_bp.route('/return_car/<int:rental_id>', methods=['POST'])
+@admin_required
+@login_required
+def return_car(rental_id):
+    rental = RentalHistory.query.get_or_404(rental_id)
+
+    # status to available
+    car = Car.query.get(rental.car_id)
+    car.status = True
+    db.session.commit()
+
+    flash("Car has been returned successfully!", "success")
+    return redirect(url_for('users.my_rentals'))

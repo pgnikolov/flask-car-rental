@@ -3,7 +3,6 @@ from flask_login import current_user, login_user, login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Message
-from flask import current_app
 from app.models import User
 from app import db
 from . import auth_bp
@@ -60,7 +59,7 @@ def sign_up():
         elif password1 != password2:
             flash("Passwords do not match", category='error')
         elif len(password1) < 4:
-            flash("Password must be at least 7 characters long", category='error')
+            flash("Password must be at least 4 characters long", category='error')
         else:
             new_user = User(
                 email=email,
