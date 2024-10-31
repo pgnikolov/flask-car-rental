@@ -51,8 +51,6 @@ A simple car rental web application built with Flask, providing essential featur
 5. **Access the App:**
    Open your browser and go to `http://127.0.0.1:5000`.
 
-## Usage
-
 
 ## Folder Structure
 
