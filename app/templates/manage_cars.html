@@ -1,6 +1,17 @@
 {% extends "base.html" %}
 {% block title %}Manage Cars{% endblock %}
 {% block content %}
+
+<!-- Style for cars' photos -->
+<style>
+  .card-img-top {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+  }
+</style>
+
+
 <h1 class="my-4">Manage Cars</h1>
 
 <div class="row">
@@ -8,6 +19,11 @@
         {% for car in cars %}
         <div class="col-md-4">
             <div class="card mb-4 shadow-sm">
+                {% if car.image_filename %}
+                    <img src="{{ url_for('static', filename='images/' ~ car.image_filename) }}" class="card-img-top" alt="{{ car.brand }} {{ car.model }}">
+                {% else %}
+                    <img src="{{ url_for('static', filename='images/default.png') }}" class="card-img-top" alt="Default Image">
+                {% endif %}
                 <div class="card-body">
                     <h5 class="card-title">{{ car.brand }} {{ car.model }}</h5>
                     <p class="card-text">
@@ -17,10 +33,12 @@
                         Gearbox: {{ car.gearbox.name }}<br>
                         Doors: {{ car.doors }}<br>
                         Seats: {{ car.seats }}<br>
-                        Mileage: {{ car.mileage }}<br>
+                        Mileage: {{ car.mileage }} km<br>
                         Color: {{ car.color }}<br>
                         Rental Price: ${{ car.rental_price }} per day<br>
-                        Status: {% if car.status %}Available{% else %}Rented{% endif %}
+                        Status: <span class="{% if car.status %}text-success{% else %}text-danger{% endif %}">
+                            {% if car.status %}Available{% else %}Rented{% endif %}
+                        </span>
                     </p>
 
                     <!-- Delete Form -->
