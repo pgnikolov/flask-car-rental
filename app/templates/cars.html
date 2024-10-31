@@ -34,7 +34,9 @@
             Mileage: {{ car.mileage }}<br>
             Color: {{ car.color }}<br>
             Rental Price: ${{ car.rental_price }} per day<br>
-            Status: {% if car.status %}Available{% else %}Rented{% endif %}
+            Status: <span class="{% if car.status %}text-success{% else %}text-danger{% endif %}">
+              {% if car.status %}Available{% else %}Rented{% endif %}
+          </span>
           </p>
         </div>
       </div>
