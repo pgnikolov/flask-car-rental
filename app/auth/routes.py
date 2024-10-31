@@ -1,9 +1,13 @@
 from flask import request, render_template, flash, redirect, url_for, current_app
 from flask_login import current_user, login_user, login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
+from itsdangerous import URLSafeTimedSerializer
+from flask_mail import Message
+from flask import current_app
 from app.models import User
 from app import db
 from . import auth_bp
+from app import mail
 
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
@@ -14,6 +18,9 @@ def login():
 
         user = User.query.filter_by(email=email).first()
         if user:
+            if not user.is_verified:
+                flash('Please confirm your email address first.', 'warning')
+                return redirect(url_for('auth.login'))
             if check_password_hash(user.password, password):
                 flash('Logged in successfully!', category='success')
                 login_user(user, remember=True)
@@ -24,6 +31,7 @@ def login():
             flash('Email does not exist.', category='error')
 
     return render_template("login.html", user=current_user)
+
 
 @auth_bp.route('/logout')
 @login_required
@@ -64,8 +72,49 @@ def sign_up():
             db.session.add(new_user)
             db.session.commit()
 
-
+            send_verification_email(new_user.email)
+            flash('A confirmation email has been sent to your email address.', 'info')
 
             return redirect(url_for('views.index'))
 
     return render_template('sign_up.html', user=current_user)
+
+
+def generate_token(email):
+    serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
+    return serializer.dumps(email, salt='email-confirm-salt')
+
+
+def confirm_token(token, expiration=3600):
+    serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
+    try:
+        email = serializer.loads(token, salt='email-confirm-salt', max_age=expiration)
+    except:
+        return False
+    return email
+
+
+def send_verification_email(user_email):
+    token = generate_token(user_email)
+    confirm_url = url_for('auth.confirm_email', token=token, _external=True)
+    msg = Message("Confirm Your Email", recipients=[user_email])
+    msg.body = f"Click the link to confirm your email: {confirm_url}"
+    mail.send(msg)
+
+
+@auth_bp.route('/confirm/<token>')
+def confirm_email(token):
+    email = confirm_token(token)
+    if not email:
+        flash('The confirmation link is invalid or has expired.', 'danger')
+        return redirect(url_for('auth.login'))
+
+    user = User.query.filter_by(email=email).first_or_404()
+    if user.is_verified:
+        flash('Account already confirmed. Please log in.', 'success')
+    else:
+        user.is_verified = True
+        db.session.commit()
+        flash('You have confirmed your account. Thanks!', 'success')
+
+    return render_template('confirm_email.html')

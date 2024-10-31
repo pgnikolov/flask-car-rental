@@ -2,14 +2,20 @@ import os
 from os import path
 from flask import Flask
 from flask_login import LoginManager
-from flask_sqlalchemy import SQLAlchemy
+from flask_mail import Mail
 from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
+from .config import Config
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_NAME = 'database.db'
 db = SQLAlchemy()
 migrate = Migrate()
+mail = Mail()
 
 
 def create_app():
@@ -17,8 +23,11 @@ def create_app():
     app.config['SECRET_KEY'] = 'ikmghjzds'
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(BASE_DIR, DB_NAME)}'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config.from_object(Config)
+
     db.init_app(app)
     migrate.init_app(app, db)
+    mail.init_app(app)
 
     from app.views import views_bp
     from app.auth import auth_bp
@@ -46,6 +55,7 @@ def create_app():
         return User.query.get(int(id))
 
     return app
+
 
 def create_database(app):
     if not path.exists('website/' + DB_NAME):
