@@ -1,13 +1,21 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
 from sqlalchemy.exc import SQLAlchemyError
-
+from werkzeug.utils import secure_filename
 from app import db
 from app.models import Car, CarType, FuelType, GearboxType
 from app.forms import CarForm
+import os
 
 
+UPLOAD_FOLDER = 'app/static/images'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
+
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 def admin_required(func):
     def wrapper(*args, **kwargs):
@@ -45,6 +53,18 @@ def add_car():
             mileage=form.mileage.data,  # New field for mileage
             status=True
         )
+
+        if 'image' not in request.files:
+            flash('No image part')
+            return redirect(request.url)
+
+        file = request.files['image']
+
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(UPLOAD_FOLDER, filename))
+            new_car.image_filename = filename
+
         db.session.add(new_car)
         db.session.commit()
         flash('Car added successfully!', 'success')
@@ -72,6 +92,14 @@ def edit_car(car_id):
             car.seats = form.seats.data
             car.doors = form.doors.data
             car.mileage = form.mileage.data
+
+            # image upload
+            if 'image' in request.files:
+                file = request.files['image']
+                if file and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    file.save(os.path.join(UPLOAD_FOLDER, filename))
+                    car.image_filename = filename  #
 
             db.session.commit()
             flash('Car updated successfully!', 'success')
@@ -101,5 +129,5 @@ def manage_cars():
         if edit_car_id:
             return redirect(url_for('admin.edit_car', car_id=edit_car_id))
 
-    all_cars = Car.query.all()  # Retrieve cars again after deletion
+    all_cars = Car.query.all()
     return render_template('manage_cars.html', cars=all_cars, current_user=current_user)

@@ -38,6 +38,7 @@ class Car(db.Model):
     fuel = db.Column(db.Enum(FuelType), nullable=False)
     gearbox = db.Column(db.Enum(GearboxType), nullable=False)
     color = db.Column(db.String(150))
+    image_filename = db.Column(db.String(100))
     status = db.Column(db.Boolean, default=True)
     rental_history = db.relationship('RentalHistory', backref='car', lazy=True)
 
