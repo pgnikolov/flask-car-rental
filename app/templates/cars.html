@@ -38,6 +38,9 @@
               {% if car.status %}Available{% else %}Rented{% endif %}
           </span>
           </p>
+            {% if car.status %}
+                <a href="{{ url_for('views.list_cars', car_id=car.id) }}" class="btn btn-primary">Rent</a>
+            {% endif %}
         </div>
       </div>
     </div>
