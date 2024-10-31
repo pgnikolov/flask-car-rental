@@ -43,12 +43,24 @@ A simple car rental web application built with Flask, providing essential featur
    pip install -r requirements.txt
    ```
 
-4. **Run the Application:**
+4. **Environment Variables:** Create a .env file for sensitive information:
+    ```bash
+   EMAIL_USER=your_email@example.com
+   EMAIL_PASS=your_password
+    ```
+
+5. **Database Setup:** Run initial migrations:
+    ```bash
+    flask db init
+    flask db migrate -m "Initial migration"
+    flask db upgrade
+    ```
+6. **Run the Application:**
    ```bash
    python app.py
    ```
 
-5. **Access the App:**
+7. **Access the App:**
    Open your browser and go to `http://127.0.0.1:5000`.
 
 
@@ -65,7 +77,11 @@ A simple car rental web application built with Flask, providing essential featur
 - **Flask-Migrate**: Handles database migrations, allowing for version control of database schema changes.
 - **Flask-WTF**: Integrates WTForms with Flask,
 - **Flask-Login**: Manages user sessions and authentication, making it easy to handle user logins.
-- 
+- **Flask-Mail:** Sends email confirmations and notifications.
+- **Itsdangerous:** Generates secure tokens, used for email confirmation. 
+- **Werkzeug.security:** Provides utilities like password hashing to securely store and check user passwords.
+
+
 
 --- 
 
