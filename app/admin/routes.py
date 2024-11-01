@@ -10,14 +10,25 @@ import os
 
 UPLOAD_FOLDER = 'app/static/images'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 
 def allowed_file(filename):
+    """
+    Checks if a file has an allowed extension.
+    Returns True if the file extension is allowed, else False.
+    """
+
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def admin_required(func):
+    """
+    Redirects non-admin users to their user panel with a warning message.
+    If current_user is an admin, grants access to the decorated function.
+    """
+
     def wrapper(*args, **kwargs):
         if not current_user.is_admin:
             flash("You do not have permission to access the admin panel.", "danger")
@@ -30,6 +41,14 @@ def admin_required(func):
 @login_required
 @admin_required
 def admin_panel():
+    """
+    Renders the admin panel for managing cars and rentals.
+
+    Returns:
+        Rendered template for 'admin.html'.
+
+    """
+
     return render_template('admin.html', current_user=current_user)
 
 
@@ -37,6 +56,21 @@ def admin_panel():
 @login_required
 @admin_required
 def add_car():
+    """
+    Handles the addition of a new car to the inventory.
+
+    GET: Renders the 'add_car.html' template with a blank form.
+    POST: Validates form data and adds the new car to the database.
+
+    Image Upload:
+        - Checks if an image file is provided and has a valid extension.
+        - Saves the uploaded file to `UPLOAD_FOLDER` and associates it with the car.
+
+    Returns:
+        Redirects to 'admin_panel' on success.
+        If errors occur, flashes appropriate messages.
+    """
+
     form = CarForm()
     if form.validate_on_submit():
         new_car = Car(
@@ -76,6 +110,20 @@ def add_car():
 @admin_required
 @login_required
 def edit_car(car_id):
+    """
+    Edits details of an existing car.Rolls back changes if an SQLAlchemy error occurs, flashing an error message.
+    Allows optional image upload with the same validation as `add_car`.
+    GET: Renders the 'edit_car.html' template with the existing car data.
+    POST: Updates the car's details in the database after validation.
+
+    Parameters:
+        car_id (int): ID of the car to edit.
+
+    Returns:
+        Redirects to 'manage_cars' on success.
+        Returns an error flash message if there’s an issue.
+    """
+
     car = Car.query.get_or_404(car_id)
     form = CarForm(obj=car)
 
@@ -115,6 +163,15 @@ def edit_car(car_id):
 @admin_required
 @login_required
 def manage_cars():
+    """
+    Manages car inventory with options to edit or delete cars.
+    POST Actions:
+        - Delete: Deletes the selected car and refreshes the list.
+        - Edit: Redirects to 'edit_car' route for modifying car details.
+
+    Returns:
+        Renders 'manage_cars.html' with all cars listed.
+    """
     if request.method == 'POST':
         car_id = request.form.get('car_id')
         car_to_delete = Car.query.get(car_id)
@@ -135,6 +192,15 @@ def manage_cars():
 @admin_required
 @login_required
 def return_car(rental_id):
+    """
+    Handles car return and updates its status to available.
+
+    Parameters:
+        rental_id (int): ID of the rental transaction to mark as returned.
+
+    Returns:
+        Redirects to 'my_rentals' after a successful update.
+    """
     rental = RentalHistory.query.get_or_404(rental_id)
 
     # status to available

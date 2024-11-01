@@ -11,6 +11,17 @@ from app import mail
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
+    """
+    Handle user login requests.
+
+    If a POST request is made, validates the user email and password.
+    If the credentials are correct, logs the user in and redirects to the main page.
+    If incorrect, displays an error message.
+
+    Returns:
+        render_template: Renders the login page template.
+        redirect: Redirects to the main page upon successful login.
+    """
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
@@ -35,11 +46,30 @@ def login():
 @auth_bp.route('/logout')
 @login_required
 def logout():
+    """
+    Log the user out and redirect to the login page.
+
+    Uses Flask-Login's logout_user function to log out the current user.
+
+    Returns:
+        redirect: Redirects to the login page.
+    """
     logout_user()
     return redirect(url_for('auth.login'))
 
 @auth_bp.route('/sign_up', methods=['GET', 'POST'])
 def sign_up():
+    """
+    Handle user registration requests.
+
+    Validates user-provided data, such as email, name, and password, then registers the user.
+    Sends a verification email upon successful registration.
+
+    Returns:
+        render_template: Renders the sign-up page template.
+        redirect: Redirects to the main page upon successful registration.
+    """
+
     if request.method == 'POST':
         email = request.form['email']
         first_name = request.form['firstName']
@@ -80,11 +110,30 @@ def sign_up():
 
 
 def generate_token(email):
+    """
+    Generate a secure token for email confirmation.
+
+    Args:
+        email (str): The email address to generate a token for.
+
+    Returns:
+        str: A secure token for email confirmation.
+    """
     serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
     return serializer.dumps(email, salt='email-confirm-salt')
 
 
 def confirm_token(token, expiration=3600):
+    """
+    Confirm the email token within a specific expiration time.
+
+    Args:
+        token (str): The token to confirm.
+        expiration (int, optional): The expiration time in seconds. Defaults to 3600.
+
+    Returns:
+        str|bool: The confirmed email address if successful, False if expired or invalid.
+    """
     serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
     try:
         email = serializer.loads(token, salt='email-confirm-salt', max_age=expiration)
@@ -94,6 +143,15 @@ def confirm_token(token, expiration=3600):
 
 
 def send_verification_email(user_email):
+    """
+    Send a verification email to the user.
+
+    Args:
+        user_email (str): The email address of the user to send the verification email to.
+
+    Returns:
+        None
+    """
     token = generate_token(user_email)
     confirm_url = url_for('auth.confirm_email', token=token, _external=True)
     msg = Message("Confirm Your Email", recipients=[user_email])
@@ -103,6 +161,18 @@ def send_verification_email(user_email):
 
 @auth_bp.route('/confirm/<token>')
 def confirm_email(token):
+    """
+    Confirm a user's email address using a token.
+
+    Verifies if the token is valid and marks the user's email as confirmed if successful.
+
+    Args:
+        token (str): The token sent to the user's email address.
+
+    Returns:
+        render_template: Renders the confirmation result page template.
+        redirect: Redirects to login page if the token is invalid or expired.
+    """
     email = confirm_token(token)
     if not email:
         flash('The confirmation link is invalid or has expired.', 'danger')

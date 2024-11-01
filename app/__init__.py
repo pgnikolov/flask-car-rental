@@ -19,6 +19,14 @@ mail = Mail()
 
 
 def create_app():
+    """
+    Configures the Flask app with necessary extensions, database settings,
+    blueprints, and other configuration values. Registers routes for the main
+    sections of the app: views, authentication, admin, user, and cars.
+
+    Returns:
+        app (Flask): The configured Flask application instance.
+    """
     app = Flask(__name__, template_folder='templates')
     app.config['SECRET_KEY'] = 'ikmghjzds'
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(BASE_DIR, DB_NAME)}'

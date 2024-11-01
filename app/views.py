@@ -8,10 +8,32 @@ views_bp = Blueprint('views', __name__)
 
 @views_bp.route('/')
 def index():
+    """
+    Renders the home page. If the user is logged in, the template will
+    display information specific to the logged-in user.
+    Returns:
+        Rendered template for 'home.html'.
+
+    """
     return render_template('home.html', user=current_user)
 
 @views_bp.route('/cars', methods=['GET'])
 def list_cars():
+    """
+    Renders a list of cars, customized for the user type.
+    Assigns a URL for each car's image to be displayed in the template.
+    Uses a default image if the car does not have an `image_filename`.
+    For Admin Users:
+        - Shows all cars, regardless of availability.
+
+    For Regular Users:
+        - Shows only available cars (`status=True`).
+
+    Returns:
+        Rendered template for 'cars.html' with all available cars and
+        their image URLs.
+
+    """
     if current_user.is_admin:
         # Admin sees all cars
         all_cars = Car.query.all()

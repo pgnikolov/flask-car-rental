@@ -2,7 +2,10 @@ from enum import Enum
 from flask_login import UserMixin
 from app import db
 
+
 class CarType(Enum):
+    """Enumeration for various car types."""
+
     SUV = "SUV"
     SEDAN = "Sedan"
     HATCHBACK = "Hatchback"
@@ -12,18 +15,27 @@ class CarType(Enum):
     VAN = "Van"
     WAGON = "Wagon"
 
+
 class FuelType(Enum):
+    """Enumeration for different fuel types available for cars."""
+
     PETROL = "Petrol"
     DIESEL = "Diesel"
     ELECTRIC = "Electric"
     HYBRID = "Hybrid"
 
+
 class GearboxType(Enum):
+    """Enumeration for gearbox types in vehicles."""
+
     MANUAL = "Manual"
     AUTOMATIC = "Automatic"
     SEMI_AUTOMATIC = "Semi-automatic"
 
+
 class Car(db.Model):
+    """Database model for a car available for rental."""
+
     __tablename__ = 'cars'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -42,7 +54,10 @@ class Car(db.Model):
     status = db.Column(db.Boolean, default=True)
     rental_history = db.relationship('RentalHistory', backref='car', lazy=True)
 
+
 class RentalHistory(db.Model):
+    """Database model for the rental history of cars."""
+
     __tablename__ = 'rental_history'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -51,7 +66,10 @@ class RentalHistory(db.Model):
     start_of_rent = db.Column(db.DateTime, nullable=False)
     end_of_rent = db.Column(db.DateTime, nullable=True)
 
+
 class User(db.Model, UserMixin):
+    """Database model for a user in the car rental system."""
+
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -64,4 +82,6 @@ class User(db.Model, UserMixin):
     is_admin = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
+        """Represent the User instance by email."""
+
         return f'<User {self.email}>'
