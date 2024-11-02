@@ -1,66 +1,129 @@
 {% extends "base.html" %}
-{% block title %}Admin Panel{% endblock %}
 {% block content %}
+
     <!-- Favicon -->
     <link href="../static/images/favicon.png" rel="icon">
 
     <link href="../static/css/style.css" rel="stylesheet">
-    <!-- Google Web Fonts -->
+        <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Rubik&display=swap"
-          rel="stylesheet">
-    <!-- Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Rubik&display=swap" rel="stylesheet">
+        <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css" rel="stylesheet">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- Libraries Stylesheet -->
+        <!-- Libraries Stylesheet -->
     <link href="../static/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
     <link href="../static/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet"/>
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="../static/css/bootstrap.min.css" rel="stylesheet">
-    <div class="container mt-6">
 
-    <h1 class="display-4 text-uppercase text-center my-5">Admin Panel</h1>
-    <div class="container-fluid py-5">
-        <div class="container pt-5 pb-3">
-            <h1 class="display-4  text-center mb-5">Available Options</h1>
-                <div class="row">
-                    <div class="col-lg-3 col-md-6 col-sm-12 mb-2">
-                        <div class="rent-item mb-4">
-                            <img class="img-fluid mb-3" src="../static/images/user-manage.png" alt="" style="width: 75px; height: 75px;">
-                            <h5 class="text-uppercase mb-3">Manage Users</h5>
-                            <a class="btn btn-primary px-3" href="">Go to Users</a>
-
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6 col-sm-12 mb-2">
-                        <div class="rent-item mb-4">
-                            <img class="img-fluid mb-3" src="../static/images/car-service.png" alt="" style="width: 75px; height: 75px;">
-                            <h5 class="text-uppercase mb-3">Manage Cars</h5>
-                            <a class="btn btn-primary px-3" href="{{ url_for('admin.manage_cars') }}">Go to Cars</a>
-                        </div>
-                    </div>
-                <div class="col-lg-3 col-md-6 col-sm-12 mb-2">
-                        <div class="rent-item mb-4">
-                            <img class="img-fluid mb-3" src="../static/images/add-car.png" alt="" style="width: 75px; height: 75px;">
-                            <h5 class="text-uppercase mb-3">Add Car</h5>
-                            <a class="btn btn-primary px-3" href="{{ url_for('admin.add_car') }}">Add Car</a>
-                        </div>
-                    </div>
-                <div class="col-lg-3 col-md-6 col-sm-12 mb-2">
-                        <div class="rent-item mb-4">
-                            <img class="img-fluid mb-4" src="../static/images/rentals-manage.png" alt="" style="width: 75px; height: 75px;">
-                            <h5 class="text-uppercase mb-3">Manage Rentals</h5>
-                            <a class="btn btn-primary px-3" href="#">Go to Rentals</a>
-                        </div>
-                    </div>
-                </div>
+    <div class="container-fluid bg-white pt-3 px-lg-5">
+        <h2 class="text-center mb-4">Add a New Car</h2>
+        <form method="POST" enctype="multipart/form-data" class="mx-auto" style="max-width: 600px;">  <!-- Include enctype for file upload -->
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.brand.label }}<br>
+                {{ form.brand(class="form-control", size=32) }}<br>
+                {% for error in form.brand.errors %}
+                    <small class="form-text text-danger">[{{ error }}]</small>
+                {% endfor %}
             </div>
-        </div>
+
+            <div class="form-group">
+                {{ form.model.label }}<br>
+                {{ form.model(size=32, class_="form-control") }}<br>
+                {% for error in form.model.errors %}
+                    <small class="form-text text-danger">[{{ error }}]</small>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{ form.year.label }}<br>
+                {{ form.year(size=32, class_="form-control") }}<br>
+                {% for error in form.year.errors %}
+                    <small class="form-text text-danger">[{{ error }}]</small>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{ form.rental_price.label }}<br>
+                {{ form.rental_price(size=32, class_="form-control") }}<br>
+                {% for error in form.rental_price.errors %}
+                    <small class="form-text text-danger">[{{ error }}]</small>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{ form.type.label }}<br>
+                {{ form.type(class_="form-control") }}<br>
+                {% for error in form.type.errors %}
+                    <small class="form-text text-danger">[{{ error }}]</small>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{ form.fuel.label }}<br>
+                {{ form.fuel(class_="form-control") }}<br>
+                {% for error in form.fuel.errors %}
+                    <small class="form-text text-danger">[{{ error }}]</small>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{ form.gearbox.label }}<br>
+                {{ form.gearbox(class_="form-control") }}<br>
+                {% for error in form.gearbox.errors %}
+                    <small class="form-text text-danger">[{{ error }}]</small>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{ form.color.label }}<br>
+                {{ form.color(size=32, class_="form-control") }}<br>
+                {% for error in form.color.errors %}
+                    <small class="form-text text-danger">[{{ error }}]</small>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{ form.seats.label }}<br>
+                {{ form.seats(size=32, class_="form-control") }}<br>
+                {% for error in form.seats.errors %}
+                    <small class="form-text text-danger">[{{ error }}]</small>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{ form.doors.label }}<br>
+                {{ form.doors(size=32, class_="form-control") }}<br>
+                {% for error in form.doors.errors %}
+                    <small class="form-text text-danger">[{{ error }}]</small>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{ form.mileage.label }}<br>
+                {{ form.mileage(size=32, class_="form-control") }}<br>
+                {% for error in form.mileage.errors %}
+                    <small class="form-text text-danger">[{{ error }}]</small>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                <label for="image" class="font-weight-bold">Upload Image</label>
+                <input type="file" class="form-control" id="image" name="image" required>
+            </div>
+
+            <div class="form-group text-center">
+                {{ form.submit(class="btn btn-primary px-5") }}
+            </div>
+        </form>
     </div>
+
     <!-- Footer Start -->
     <div class="container-fluid bg-secondary py-5 px-sm-3 px-md-5" style="margin-top: 90px;">
         <div class="row pt-5">
