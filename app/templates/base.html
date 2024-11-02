@@ -8,6 +8,9 @@
 
     <title>{% block title %}Car Rental Service{% endblock %}</title>
 
+    <!-- Favicon -->
+    <link href="../static/images/favicon.png" rel="icon">
+
     <link href="../static/css/style.css" rel="stylesheet">
         <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -78,7 +81,7 @@
                     <div class="navbar-nav ml-auto py-0">
                         <a href="{{ url_for('views.index') }}" class="nav-item nav-link active">Home</a>
                             {% if current_user.is_authenticated %}
-                                <a href="../cars.html" class="nav-item nav-link">Cars</a>
+                                <a href="{{ url_for('views.list_cars') }}"  class="nav-item nav-link">Cars</a>
                                 <a href="../contact.html" class="nav-item nav-link">Contact</a>
                                 <a href="{{ url_for('auth.logout') }}" class="nav-item nav-link">Log out</a>
                             {% else %}

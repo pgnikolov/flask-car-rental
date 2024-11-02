@@ -1,6 +1,8 @@
-{% extends "base.html" %}{% block title %}Sign Up{% endblock %}
+{% extends "base.html" %}
+{% block title %}Cars{% endblock %}
 {% block content %}
-        <!-- Favicon -->
+
+    <!-- Favicon -->
     <link href="../static/images/favicon.png" rel="icon">
 
     <link href="../static/css/style.css" rel="stylesheet">
@@ -15,57 +17,66 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
         <!-- Libraries Stylesheet -->
     <link href="../static/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="../static/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+    <link href="../static/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet"/>
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="../static/css/bootstrap.min.css" rel="stylesheet">
 
-    <form class="container-fluid bg-white"  method="POST">
-        <div class="row" style="background-size: 100%; background-repeat: no-repeat">
-            <div class="col-md-6" style="background-size: 100%; background-repeat: no-repeat">
-                <div class="field-set" style="background-size: 100%; background-repeat: no-repeat">
-                    <label for="email">Email Address</label>
-                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter email"/>
-                </div>
-            </div>
-        </div>
-        <div class="row" style="background-size: 100%; background-repeat: no-repeat">
-            <div class="col-md-6" style="background-size: 100%; background-repeat: no-repeat">
-                <div class="field-set" style="background-size: 100%; background-repeat: no-repeat">
-                    <label for="email">First Name</label>
-                    <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Enter first name"/>
-                </div>
-            </div>
-        </div>
-        <div class="row" style="background-size: 100%; background-repeat: no-repeat">
-            <div class="col-md-6" style="background-size: 100%; background-repeat: no-repeat">
-                <div class="field-set" style="background-size: 100%; background-repeat: no-repeat">
-                    <label for="lastName">Last Name</label>
-                    <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Enter last name"/>
-                </div>
-            </div>
-        </div>
-        <div class="row" style="background-size: 100%; background-repeat: no-repeat">
-            <div class="col-md-6" style="background-size: 100%; background-repeat: no-repeat">
-                <div class="field-set" style="background-size: 100%; background-repeat: no-repeat">
-                    <label for="password1">Password</label>
-                    <input type="password" class="form-control" id="password1" name="password1" placeholder="Enter password"/>
-                </div>
-            </div>
-        </div>
-        <div class="row" style="background-size: 100%; background-repeat: no-repeat">
-            <div class="col-md-6" style="background-size: 100%; background-repeat: no-repeat">
-                <div class="field-set" style="background-size: 100%; background-repeat: no-repeat">
-                    <label for="password2">Password</label>
-                <input type="password" class="form-control" id="password2" name="password2" placeholder="Confirm password"/>
-                </div>
-            </div>
-        </div>
-        <br/>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+    <h1 class="display-4 text-uppercase text-center my-5">Find Your Car</h1>
 
-
+    <div class="container-fluid py-5">
+        <div class="container pt-5 pb-3">
+            <div class="row">
+                {% if cars %}
+                    {% for car in cars %}
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="rent-item mb-4 shadow-sm border rounded">
+                                {% if car.image_filename %}
+                                    <img src="{{ url_for('static', filename='images/' ~ car.image_filename) }}" class="img-fluid mb-4" alt="{{ car.brand }} {{ car.model }}">
+                                {% else %}
+                                    <img src="{{ url_for('static', filename='images/default.png') }}" class="img-fluid mb-4" alt="Default Image">
+                                {% endif %}
+                                <h4 class="text-uppercase mb-3 text-center">{{ car.brand }} {{ car.model }}</h4>
+                                <div class="d-flex justify-content-center mb-3">
+                                    <div class="px-2">
+                                        <i class="fa fa-calendar-alt text-primary mr-1"></i>
+                                        <span>{{ car.year }}</span>
+                                    </div>
+                                    <div class="px-2 border-left border-right">
+                                        <i class="fa fa-cogs text-primary mr-1"></i>
+                                        <span>{{ car.gearbox.name }}</span>
+                                    </div>
+                                    <div class="px-2">
+                                        <i class="fa fa-road text-primary mr-1"></i>
+                                        <span>{{ car.mileage }} km</span>
+                                    </div>
+                                </div>
+                                <p class="text-center mb-2">Fuel: {{ car.fuel.name }} | Doors: {{ car.doors }} | Seats: {{ car.seats }}</p>
+                                <p class="text-center font-weight-bold text-uppercase">Rental Price: €{{ car.rental_price }} / day</p>
+                                <div class="text-center">
+                                    <span class="{% if car.status %}text-success{% else %}text-danger{% endif %}">
+                                        {% if car.status %}Available{% else %}Rented{% endif %}
+                                    </span>
+                                </div>
+                                {% if car.status %}
+                                    <div class="text-center mt-3">
+                                        <a href="{{ url_for('views.list_cars', car_id=car.id) }}" class="btn btn-primary text-uppercase px-4">Rent</a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="col-12">
+                        <div class="alert alert-info text-center" role="alert">
+                            No cars available at the moment.
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
     <!-- Footer Start -->
     <div class="container-fluid bg-secondary py-5 px-sm-3 px-md-5" style="margin-top: 90px;">
         <div class="row pt-5">
@@ -138,7 +149,6 @@
 
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a>
-
 
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
