@@ -4,9 +4,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Message
 from app.models import User
-from app import db
+from app import db, mail, views
+from app.views import views_bp
 from . import auth_bp
-from app import mail
 
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
@@ -55,7 +55,7 @@ def logout():
         redirect: Redirects to the login page.
     """
     logout_user()
-    return redirect(url_for('auth.login'))
+    return redirect(url_for('views.index'))
 
 @auth_bp.route('/sign_up', methods=['GET', 'POST'])
 def sign_up():
