@@ -1,6 +1,8 @@
+from datetime import datetime
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, SelectField, SubmitField
-from wtforms.validators import DataRequired
+from wtforms.fields.datetime import DateField
+from wtforms.validators import DataRequired, ValidationError
 from app.models import CarType, FuelType, GearboxType
 
 
@@ -44,3 +46,36 @@ class CarForm(FlaskForm):
     mileage = IntegerField('Mileage (in km)', validators=[DataRequired()])
 
     submit = SubmitField('Add Car')
+
+
+def validate_start_date(form, field):
+    if field.data < datetime.today().date():
+        raise ValidationError("The start date cannot be in the past.")
+
+def validate_end_date(form, field):
+    if field.data < form.start_date.data:
+        raise ValidationError("The end date must be after the start date.")
+
+
+class RentalForm(FlaskForm):
+    """
+    A Flask-WTF form for collecting and validating rental data in the application.
+
+    Fields:
+        start_date (DateField): The start date of the rental. Required and cannot be in the past.
+        end_date (DateField): The end date of the rental. Required.
+        pickup_location (StringField): The location where the car will be picked up. Required.
+        return_location (StringField): The location where the car will be returned. Required.
+        submit (SubmitField): Submit button to finalize the rental.
+
+    Validators:
+        DataRequired: Ensures that each field has input from the user.
+    """
+
+    start_date = DateField('Start Date', format='%d-%m-%Y',
+                            validators=[DataRequired(), validate_start_date], default=datetime.today)
+    end_date = DateField('End Date', format='%d-%m-%Y',
+                          validators=[DataRequired(), validate_end_date])
+    pickup_location = SelectField('Pickup Location', choices=[], validators=[DataRequired()])
+    return_location = SelectField('Return Location', choices=[], validators=[DataRequired()])
+    submit = SubmitField('Rent Car')

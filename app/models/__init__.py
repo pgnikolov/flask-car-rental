@@ -1,3 +1,4 @@
+from datetime import datetime
 from enum import Enum
 from flask_login import UserMixin
 from app import db
@@ -51,20 +52,8 @@ class Car(db.Model):
     gearbox = db.Column(db.Enum(GearboxType), nullable=False)
     color = db.Column(db.String(150))
     image_filename = db.Column(db.String(100))
-    status = db.Column(db.Boolean, default=True)
-    rental_history = db.relationship('RentalHistory', backref='car', lazy=True)
-
-
-class RentalHistory(db.Model):
-    """Database model for the rental history of cars."""
-
-    __tablename__ = 'rental_history'
-
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    car_id = db.Column(db.Integer, db.ForeignKey('cars.id'))
-    start_of_rent = db.Column(db.DateTime, nullable=False)
-    end_of_rent = db.Column(db.DateTime, nullable=True)
+    status = db.Column(db.Boolean, default=True)  # True = available, False = rented
+    rentals = db.relationship('RentalHistory', back_populates='car', lazy=True)
 
 
 class User(db.Model, UserMixin):
@@ -77,7 +66,7 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(150))
     first_name = db.Column(db.String(150))
     last_name = db.Column(db.String(150))
-    rented_cars = db.relationship('RentalHistory', backref='user', lazy=True)
+    rentals = db.relationship('RentalHistory', back_populates='user', lazy=True)
     is_verified = db.Column(db.Boolean, default=False)
     is_admin = db.Column(db.Boolean, default=False)
 
@@ -85,3 +74,20 @@ class User(db.Model, UserMixin):
         """Represent the User instance by email."""
 
         return f'<User {self.email}>'
+
+class RentalHistory(db.Model):
+    """Database model for car rental records."""
+    __tablename__ = 'rentals'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    car_id = db.Column(db.Integer, db.ForeignKey('cars.id'), nullable=False)
+    start_date = db.Column(db.DateTime, default=datetime.utcnow)
+    end_date = db.Column(db.DateTime, nullable=True)
+    total_cost = db.Column(db.Float, nullable=True)
+    status = db.Column(db.String(20), nullable=False)
+    pickup_location = db.Column(db.String(100), nullable=False)
+    return_location = db.Column(db.String(100), nullable=False)
+
+    user = db.relationship('User', back_populates='rentals')
+    car = db.relationship('Car', back_populates='rentals')
